@@ -760,3 +760,46 @@ class AudioReactiveEffect(Effect):
         be implemented by subclasses
         """
         pass
+
+
+class NoteFinder(object):
+    """
+    Equivalent to the note finder found in the base C colorchord implementation, by cnlohr.
+    Converted from CaiB's C# clone to Python by not_matt
+
+    [original, C] https://github.com/cnlohr/colorchord
+    [CaiB, C#] https://github.com/CaiB/ColorChord.NET/blob/master/ColorChord.NET/NoteFinder/BaseNoteFinder.cs
+    """
+
+    def __init__(self):
+        # fmt: off
+        # CONSTANTS
+        self.OctaveBinCount = OctaveBinCount = 24                            # noqa: E221  int                  How many bins compose one octave in the raw DFT data.
+        self.OctaveCount    = OctaveCount    = 5                             # noqa: E221  int                  Over how many octaves the raw DFT data will be processed.
+        self.DFTRawBinCount                  = OctaveBinCount * OctaveCount  # noqa: E221  int                  How many bins the DFT will class sound frequency data into.
+        self.NoteCount                       = OctaveBinCount / 2            # noqa: E221  int                  How many note peaks are attempted to be extracted from the frequency data.
+        self.DFT_Q                           = 20                            # noqa: E221  int                  This is a required parameter for the DFT, but the desktop version doesn't use it.
+        self.DFT_Speedup                     = 1000                          # noqa: E221  int                  This is a required parameter for the DFT, but the desktop version doesn't use it.
+        self.DefaultDistributionSigma        = 1.4                           # noqa: E221  float                The sigma value to use for <see cref="NoteDistribution"/> by default.
+        self.PeakCompressCoefficient         = 1                             # noqa: E221  float                Used in normalizing all peak amplitudes.
+        self.PeakCompressExponent            = 0.5                           # noqa: E221  float                Used in normalizing all peak amplitudes.
+        self.MinNoteAmplitude                = 0.001                         # noqa: E221  float                How large a note needs to be to not be considered dead (and therefore re-assigned).
+        self.MinDistributionValueNewNote     = 0.02                          # noqa: E221  float                How large a distribution needs to be in order to be turned into a brand new note.
+
+        # CONFIGURABLE CONSTANTS
+        self.StartFreq                       = 65.4064                       # noqa: E221  float 0.0~20000.0    The minimum frequency analyzed. (in Hz)
+        self.DFTIIR                          = 0.65                          # noqa: E221  float 0.0~1.0        Determines how much the previous frame's DFT data is used in the next frame. Smooths out rapid changes from frame-to-frame, but can cause delay if too strong.
+        self.DFTAmplify                      = 2.0                           # noqa: E221  float 0.0~10000.0    Determines how much the raw DFT data is amplified before being used.
+        self.DFTSlope                        = 0.1                           # noqa: E221  float 0.0~10000.0    The slope of the extra frequency-dependent amplification done to raw DFT data. Positive values increase sensitivity at higher frequencies.
+        self.OctaveFilterIterations          = 2                             # noqa: E221  int   0~10000        How often to run the octave data filter. This smoothes out each bin with adjacent ones.
+        self.OctaveFilterStrength            = 0.5                           # noqa: E221  float 0.0~1.0        How strong the octave data filter is. Higher values mean each bin is more aggressively averaged with adjacent bins. Higher values mean less glitchy, but also less clear note peaks.
+        self.NoteInfluenceDist               = 1.8                           # noqa: E221  float 0.0~100.0      How close a note needs to be to a distribution peak in order to be merged.
+        self.NoteAttachFreqIIR               = 0.3                           # noqa: E221  float 0.0~1.0        How strongly the note merging filter affects the note frequency. Stronger filter means notes take longer to shift positions to move together.
+        self.NoteAttachAmpIIR                = 0.35                          # noqa: E221  float 0.0~1.0        How strongly the note merging filter affects the note amplitude. Stronger filter means notes take longer to merge fully in amplitude.
+        self.NoteAttachAmpIIR2               = 0.25                          # noqa: E221  float 0.0~1.0        This filter is applied to notes between cycles in order to smooth their amplitudes over time.
+        self.NoteCombineDistance             = 0.5                           # noqa: E221  float 0.0~100.0      How close two existing notes need to be in order to get combined into a single note.
+        self.NoteOutputChop                  = 0.05                          # noqa: E221  float 0.0~1.0        Notes below this value get zeroed. Increase if low-amplitude notes are causing noise in output.
+        # fmt: on
+
+    def update(self):
+        pass
