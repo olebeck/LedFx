@@ -48,6 +48,9 @@ const IntegrationsCard = ({ int }) => {
                 <Typography style={{ fontSize: '14px' }} color="textSecondary" gutterBottom>
                     {int.config.description}
                 </Typography>
+                <Typography style={{ fontSize: '14px' }} color="textSecondary" gutterBottom>
+                    Status: {int.status === 3 ? 'connecting...' : int.status === 2 ? 'disconnecting': int.status === 1 ? 'connected':int.status === 0 ? 'disconnected':'Unknown'}            
+                </Typography>
             </CardContent>
             <CardActions>
                 <PopoverSure
@@ -80,11 +83,12 @@ const IntegrationsCard = ({ int }) => {
                     color="primary"
                     onChange={() =>
                         handleToggle({
-                            id: int.id,
+                            id: int.id, 
                         })
                     }
-                />
+                    checked={int.active} />
             </CardActions>
+            
         </Card>
     );
 };
