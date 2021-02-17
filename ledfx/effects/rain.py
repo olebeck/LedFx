@@ -7,6 +7,7 @@ import voluptuous as vol
 from ledfx.color import COLORS
 from ledfx.effects.audio import AudioReactiveEffect
 from ledfx.effects.effectlets import EFFECTLET_LIST
+from ledfx.utils import np_clip
 
 
 class RainAudioEffect(AudioReactiveEffect):
@@ -126,7 +127,7 @@ class RainAudioEffect(AudioReactiveEffect):
                 :, index : index + self.frame_width
             ] += coloured_frame
 
-        np.clip(overlaid_frames, 0, 255, out=overlaid_frames)
+        np_clip(overlaid_frames, 0, 255, overlaid_frames)
         return overlaid_frames[
             :,
             self.frame_side_lengths : self.frame_side_lengths

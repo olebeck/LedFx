@@ -38,6 +38,7 @@ INSTALL_REQUIRES = [
     "certifi>=2019.3.9",
     "pyserial>=3.5",
     "pystray>=0.17",
+    "numba>=0.53.0rc1.post1",
 ]
 
 setup(

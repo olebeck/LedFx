@@ -14,6 +14,7 @@ from ledfx.events import (
     EffectSetEvent,
     Event,
 )
+from ledfx.utils import np_clip
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -290,7 +291,7 @@ class Display(object):
 
         # Get and process active effect frame
         pixels = self._active_effect.get_pixels()
-        frame = np.clip(
+        frame = np_clip(
             pixels * self._config["max_brightness"],
             0,
             255,
@@ -314,7 +315,7 @@ class Display(object):
         fadeout_frame = None
         if self._fadeout_effect:
             # Get and process fadeout effect frame
-            fadeout_frame = np.clip(
+            fadeout_frame = np_clip(
                 self._fadeout_effect.pixels * self._config["max_brightness"],
                 0,
                 255,

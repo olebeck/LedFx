@@ -4,6 +4,7 @@ import voluptuous as vol
 from ledfx.color import GRADIENTS
 from ledfx.effects.audio import AudioReactiveEffect
 from ledfx.effects.gradient import GradientEffect
+from ledfx.utils import np_clip
 
 
 class EQAudioEffect(AudioReactiveEffect, GradientEffect):
@@ -52,7 +53,7 @@ class EQAudioEffect(AudioReactiveEffect, GradientEffect):
         # Grab the filtered difference between the filtered melbank and the
         # raw melbank.
         self.r = self._r_filter.update(y - filtered_y)
-        np.clip(self.r, 0, 1, out=self.r)
+        np_clip(self.r, 0, 1, self.r)
 
     def render(self):
         r_split = np.array_split(self.r, self._config["gradient_repeat"])

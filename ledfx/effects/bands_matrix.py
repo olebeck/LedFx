@@ -4,6 +4,7 @@ import voluptuous as vol
 from ledfx.color import COLORS, GRADIENTS
 from ledfx.effects.audio import AudioReactiveEffect
 from ledfx.effects.gradient import GradientEffect
+from ledfx.utils import np_clip
 
 
 class BandsMatrixAudioEffect(AudioReactiveEffect, GradientEffect):
@@ -55,7 +56,7 @@ class BandsMatrixAudioEffect(AudioReactiveEffect, GradientEffect):
 
     def render(self):
         out = np.tile(self.r, (3, 1)).T
-        np.clip(out, 0, 1, out=out)
+        np_clip(out, 0, 1, out)
         out_split = np.array_split(out, self._config["band_count"], axis=0)
         for i in range(self._config["band_count"]):
             band_width = len(out_split[i])

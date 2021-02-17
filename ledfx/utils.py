@@ -15,8 +15,10 @@ from abc import ABC
 # from asyncio import coroutines, ensure_future
 from subprocess import PIPE, Popen
 
+import numpy as np
 import requests
 import voluptuous as vol
+from numba import jit
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -42,6 +44,28 @@ def install_package(package):
         )
         return False
     return True
+
+
+@jit(nopython=True, cache=True, nogil=True)
+def np_clip(source_array, minimum_value, maximum_value, output_array=None):
+    """
+    This replaces np.clip with numba generated machine code - fairly hefty speed gains.
+
+    Args:
+        source_array: An array containing data to be clipped
+        minimum_value: The minimum value to clip data within the array to
+        maximum_value: The MAXimum value to clip data within the array to
+        output_array: Array to operate on in place
+    Returns:
+        array of the same size type: Array data with values clipped
+
+    """
+    if output_array is None:
+        output_array = np.empty_like(source_array)
+    output_array[:] = np.minimum(
+        np.maximum(source_array, minimum_value), maximum_value
+    )
+    return output_array
 
 
 def import_or_install(package):
