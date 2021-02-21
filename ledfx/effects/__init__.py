@@ -6,6 +6,7 @@ from functools import lru_cache
 
 import numpy as np
 import voluptuous as vol
+from numba import jit
 
 from ledfx.color import COLORS
 from ledfx.utils import BaseRegistry, RegistryLoader
@@ -42,6 +43,7 @@ def mix_colors(color_1, color_2, ratio):
         )
 
 
+@jit(nopython=True, cache=True)
 def fill_solid(pixels, color):
     pixels[
         :,
@@ -72,10 +74,12 @@ def mirror_pixels(pixels):
     )
 
 
+@jit(nopython=True, cache=True)
 def flip_pixels(pixels):
     return np.flipud(pixels)
 
 
+@jit(cache=True, parallel=True)
 def blur_pixels(pixels, sigma):
     rgb_array = pixels.T
     rgb_array[0] = smooth(rgb_array[0], sigma)
@@ -90,6 +94,7 @@ def brightness_pixels(pixels, brightness):
 
 
 @lru_cache(maxsize=32)
+@jit(cache=True, parallel=True)
 def _gaussian_kernel1d(sigma, order, radius):
     """
     Produces a 1D Gaussian or Gaussian-derivative filter kernel as a numpy array.
@@ -125,6 +130,7 @@ def _gaussian_kernel1d(sigma, order, radius):
     return phi_x
 
 
+@jit(cache=True, parallel=True)
 def smooth(x, sigma):
     """
     Smooths a 1D array via a Gaussian filter.
