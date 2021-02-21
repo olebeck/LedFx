@@ -46,7 +46,7 @@ def install_package(package):
     return True
 
 
-@jit(nopython=True, cache=True, nogil=True)
+@jit(nopython=True, cache=True)
 def np_clip(source_array, minimum_value, maximum_value, output_array=None):
     """
     This replaces np.clip with numba generated machine code - fairly hefty speed gains.
