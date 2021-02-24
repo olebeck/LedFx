@@ -7,9 +7,6 @@
 *.orig
 *.log
 *.pot
-__pycache__/*
-ledfx/__pycache__/*
-ledfx/effects/__pycache__/*
 .cache/*
 .*.swp
 */.ipynb_checkpoints/*
@@ -72,3 +69,7 @@ frontend/.eslintcache
 *.eslintcache
 
 
+#Pycache from numba
+ledfx/effects/__pycache__/*
+ledfx/__pycache__/*
+__pycache__/*

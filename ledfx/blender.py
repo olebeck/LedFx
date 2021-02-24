@@ -1,4 +1,7 @@
 import numpy as np
+from numba import jit
+
+from ledfx.utils import np_clip
 
 
 class IterClass(type):
@@ -35,6 +38,7 @@ class Blender(metaclass=IterClass):
         x3 = np.multiply(x2, 1 - weight)
         np.add(x1, x3, x1)
 
+    @jit(nopython=True, cache=True)
     def subtract(self, x1, x2, weight):
         """
         weighted subtractive blending of x1 and x2
@@ -44,6 +48,7 @@ class Blender(metaclass=IterClass):
         x3 = np.multiply(x2, 1 - weight)
         np.subtract(x1, x3, x1)
 
+    @jit(nopython=True, cache=True)
     def multiply(self, x1, x2, weight):
         """
         weighted multiplicative blending of x1 and x2
@@ -54,6 +59,7 @@ class Blender(metaclass=IterClass):
         np.multiply(x1, x3, x1)
         np.divide(x1, self.max_brightness, x1)
 
+    @jit(nopython=True, cache=True)
     def divide(self, x1, x2, weight):
         """
         weighted divisive blending of x1 and x2
@@ -64,6 +70,7 @@ class Blender(metaclass=IterClass):
         np.divide(x1, x3, where=x3 > 0, out=x1)
         np.multiply(x1, self.max_brightness, x1)
 
+    @jit(nopython=True, cache=True)
     def dissolve(self, x1, x2, weight):
         """
         random indexes of x1 are set to the value of x2
@@ -72,6 +79,7 @@ class Blender(metaclass=IterClass):
         indexes = np.greater(self.dissolve_array, weight)
         x1[indexes, :] = x2[indexes, :]
 
+    @jit(nopython=True, cache=True)
     def push(self, x1, x2, weight):
         """
         x2 "pushes" x1 to the side, proportional to weight
@@ -80,6 +88,7 @@ class Blender(metaclass=IterClass):
         np.roll(x1, idx, axis=1)
         x1[:idx, :] = x2[:idx, :]
 
+    @jit(nopython=True, cache=True)
     def slide(self, x1, x2, weight):
         """
         x2 overlaps x1 from the side, proportional to weight
@@ -87,6 +96,7 @@ class Blender(metaclass=IterClass):
         idx = weight * self.pixel_count
         x1[:idx, :] = x2[:idx, :]
 
+    @jit(nopython=True, cache=True)
     def iris(self, x1, x2, weight):
         """
         x2 overlaps x1 from the centre, proportional to weight
@@ -94,23 +104,25 @@ class Blender(metaclass=IterClass):
         indexes = np.greater(self.iris_array, weight)
         x1[indexes, :] = x2[indexes, :]
 
+    @jit(nopython=True, cache=True)
     def throughWhite(self, x1, x2, weight):
         """
         fades x1 into white, then out into x2
         """
         if weight < 0.5:
-            np.clip(x1, weight * 2, None, x1)
+            np_clip(x1, weight * 2, None, x1)
         else:
-            np.clip(x2, (1 - weight) * 2, None, x1)
+            np_clip(x2, (1 - weight) * 2, None, x1)
 
+    @jit(nopython=True, cache=True)
     def throughBlack(self, x1, x2, weight):
         """
         fades x1 into black, then out into x2
         """
         if weight < 0.5:
-            np.clip(x1, None, 1 - (weight * 2), x1)
+            np_clip(x1, None, 1 - (weight * 2), x1)
         else:
-            np.clip(x2, None, 2 * (weight - 0.5), x1)
+            np_clip(x2, None, 2 * (weight - 0.5), x1)
 
     NAMED_FUNCTIONS = {
         "Add": add,
