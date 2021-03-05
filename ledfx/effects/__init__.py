@@ -28,6 +28,7 @@ class DummyEffect(object):
         pass
 
 
+@jit(cache=True, parallel=True)
 def mix_colors(color_1, color_2, ratio):
     if np.array_equal(color_2, []):
         return (
@@ -62,6 +63,7 @@ def fill_rainbow(pixels, initial_hue, delta_hue):
     return pixels
 
 
+@jit(cache=True, parallel=True)
 def mirror_pixels(pixels):
     # TODO: Figure out some better logic here. Needs to reduce the signal
     # and reflect across the middle. The prior logic was broken for
@@ -72,9 +74,11 @@ def mirror_pixels(pixels):
         .reshape(mirror_shape)
         .mean(axis=1)
     )
+    # Much faster, but explodes for uneven length arrays
+    # return np.vstack((pixels[::2], pixels[-1::-2]))
 
 
-@jit(nopython=True, cache=True)
+@jit(nopython=True, cache=True, parallel=True)
 def flip_pixels(pixels):
     return np.flipud(pixels)
 
@@ -88,6 +92,7 @@ def blur_pixels(pixels, sigma):
     return rgb_array.T
 
 
+@jit(cache=True, parallel=True)
 def brightness_pixels(pixels, brightness):
     pixels = np.multiply(pixels, brightness, out=pixels, casting="unsafe")
     return pixels
@@ -296,6 +301,7 @@ class Effect(BaseRegistry):
     def render(self):
         return self.pixels
 
+    @jit(cache=True, parallel=True)
     def get_pixels(self):
         pixels = self.render()
 
