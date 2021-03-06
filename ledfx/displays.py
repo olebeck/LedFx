@@ -429,8 +429,8 @@ class Display(object):
                     )
             device = self._ledfx.devices.get(device_id)
             if device is None:
-                _LOGGER.info("No Current Devices - How are we flushing!?")
-                return
+                _LOGGER.warning("No active devices - Deactivating.")
+                self.deactivate
             elif device.is_active():
                 device.update_pixels(self.id, data)
         # self.interpolate.cache_clear()
