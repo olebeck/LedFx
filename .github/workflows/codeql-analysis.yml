@@ -3,12 +3,12 @@ name: CodeQL Analysis
 on:
   push:
     branches:
-      - dev
+      - numba-refactor
     paths-ignore:
       - '.*/**'
   pull_request:
     branches:
-      - dev
+      - numba-refactor
     paths-ignore:
       - '.*/**'
   schedule:

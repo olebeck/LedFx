@@ -3,7 +3,7 @@ name: CI Build LedFx
 on:
   push:
     branches:
-      - Virtuals
+      - numba-refactor
   pull_request:
 
 jobs:
