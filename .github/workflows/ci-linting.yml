@@ -4,7 +4,11 @@ on:
   push:
     branches:
       - numba-refactor
-  pull_request: ~
+  pull_request:
+    branches:
+      - master
+      - dev
+      - numba-refactor
 
 env:
   CACHE_VERSION: 1

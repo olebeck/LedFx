@@ -4,11 +4,15 @@ on:
   push:
     branches:
       - numba-refactor
+      - master
+      - dev
     paths-ignore:
       - '.*/**'
   pull_request:
     branches:
       - numba-refactor
+      - master
+      - dev
     paths-ignore:
       - '.*/**'
   schedule:
@@ -17,7 +21,7 @@ on:
 
 env:
   CACHE_VERSION: 1
-  DEFAULT_PYTHON: 3.9
+  DEFAULT_PYTHON: 3.8
 
 jobs:
   analyze-python:
