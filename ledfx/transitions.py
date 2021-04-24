@@ -1,5 +1,7 @@
 import numpy as np
 
+from ledfx.utils import np_clip
+
 
 class IterClass(type):
     def __iter__(cls):
@@ -70,18 +72,18 @@ class Transitions(metaclass=IterClass):
         fades x1 into white, then out into x2
         """
         if weight < 0.5:
-            np.clip(x2, weight * 2 * 255, None, out=x1)
+            np_clip(x2, weight * 2 * 255, None, out=x1)
         else:
-            np.clip(x1, (1 - weight) * 2 * 255, None, out=x1)
+            np_clip(x1, (1 - weight) * 2 * 255, None, out=x1)
 
     def throughBlack(self, x1, x2, weight):
         """
         fades x1 into black, then out into x2
         """
         if weight < 0.5:
-            np.clip(x2, None, 255 * (1 - (weight * 2)), x1)
+            np_clip(x2, None, 255 * (1 - (weight * 2)), x1)
         else:
-            np.clip(x1, None, 255 * 2 * (weight - 0.5), x1)
+            np_clip(x1, None, 255 * 2 * (weight - 0.5), x1)
 
     NAMED_FUNCTIONS = {
         "Add": add,
