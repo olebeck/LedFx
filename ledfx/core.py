@@ -104,7 +104,7 @@ class LedFxCore:
         creates event listeners to fire visualisation events at
         a given rate
         """
-        min_time_since = 1 / self.config["frontend_fps"]
+        min_time_since = 1 / self.config["visualisation_fps"]
         time_since_last = {}
 
         def handle_visualisation_update(event):
