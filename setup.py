@@ -41,6 +41,7 @@ INSTALL_REQUIRES = [
     "sentry-sdk~=1.1.0",
     "certifi>=2020.12.5",
     "pyserial>=3.5",
+    "python-rtmidi>=1.4.9",
 ]
 
 setup(
